@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { PlacesStates } from './placesStates/models/placesStates.entity';
+import { Sellers } from './sellers/models/sellers.entity';
 
 
 export const DatabaseProviders = [
@@ -17,7 +18,7 @@ export const DatabaseProviders = [
         password: 'wedydKyN67@3',
         database: 'event_place_db',
       });
-      sequelize.addModels([PlacesStates]);
+      sequelize.addModels([PlacesStates, Sellers]);
       await sequelize.sync();
       return sequelize;
     },

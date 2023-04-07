@@ -2,13 +2,12 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table
 export class Sellers extends Model {
-    @Column({
+    /*@Column({
         type: DataType.INTEGER,
-        /*allowNull: false,*/
         primaryKey: true,
         autoIncrement: true
     })
-    id: number;
+    id: number;*/
     @Column({
         type: DataType.STRING,
         allowNull: false,

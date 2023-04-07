@@ -8,9 +8,9 @@ export class AddCompanyController {
     constructor(private readonly addCompanyService: AddCompanyService) { }
     @Post('create')
     async create(@Body() company: CompanyDto, @Response() res) {
-        console.log('in create')
+        console.log('in create');
         const created = await this.addCompanyService.addCompany(company);
-        console.log('after created',created,typeof created)
+        console.log('after created',created,typeof created);
         if (created) {
             res.send('Success');
         } else {

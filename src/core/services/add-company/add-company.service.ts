@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { AddCompanyDto } from './addCompany.dto';
 import { Sellers } from '../../database/sellers/models/sellers.entity';
 import { SELLERS_REPOSITORY } from '../../constants';
 
@@ -11,12 +10,30 @@ export class AddCompanyService {
         console.log('in addCompany')
         const hashedPass = await this.hashPassword(company.password);
         console.log('after hashPassword call', hashedPass)
-        return await this.sellersRepository.create<Sellers>({company: company.company,access_key: hashedPass});
+        return await this.createSeller({company: company.company,access_key: hashedPass});
     }
     private async hashPassword(password: string) {
-        console.log('in hashPassword')
         const hashedPass = await bcrypt.hash(password, 14);
-        console.log('after bcrypt')
         return hashedPass;
+    }
+    private async createSeller(newSeller): Promise<Sellers>{
+        return await this.sellersRepository.create<Sellers>(newSeller);
+    }
+    async checkCompany(company) {
+        console.log('in checkCompnay');
+        const companyData = (await this.findCompany(company.company));
+        if (!companyData) throw ('No such company');
+        const isPassMatch = await this.checkIsMatch(company.password, companyData.access_key);
+        if (!isPassMatch) throw (' Wrong password');
+        return isPassMatch;
+    }
+    private async findCompany(company: string) {
+        return await this.sellersRepository.findOne({
+        	where: { company: company }
+    	})
+    }
+    private async checkIsMatch(pass: string, hashedPass: string) {
+        const isPassMatch = await bcrypt.compare(pass, hashedPass);
+        return isPassMatch;
     }
 }
