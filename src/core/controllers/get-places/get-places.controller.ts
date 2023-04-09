@@ -1,6 +1,7 @@
 import { Controller, Get, Put, Post, Req, Res, Param, Body, NotFoundException } from '@nestjs/common';
 import { GetPlacesService } from '../../services/get-places/get-places.service';
 import { ReserveDto } from './reserve.dto';
+import { map } from 'rxjs';
 
 @Controller('getPlaces')
 export class GetPlacesController {

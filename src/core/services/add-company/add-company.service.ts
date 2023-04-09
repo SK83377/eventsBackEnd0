@@ -1,4 +1,5 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { Injectable, Inject, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { Sellers } from '../../database/sellers/models/sellers.entity';
 import { SELLERS_REPOSITORY } from '../../constants';
@@ -20,11 +21,12 @@ export class AddCompanyService {
         return await this.sellersRepository.create<Sellers>(newSeller);
     }
     async checkCompany(company) {
-        console.log('in checkCompnay');
-        const companyData = (await this.findCompany(company.company));
-        if (!companyData) throw ('No such company');
+        console.log('in checkCompany');
+        const companyData = await this.findCompany(company.company);
+        console.log('26, add-company service', companyData)
+        if (!companyData) throw new HttpException('No such company', HttpStatus.FORBIDDEN);
         const isPassMatch = await this.checkIsMatch(company.password, companyData.access_key);
-        if (!isPassMatch) throw (' Wrong password');
+        if (!isPassMatch) throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
         return isPassMatch;
     }
     private async findCompany(company: string) {
